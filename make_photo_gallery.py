@@ -14,6 +14,7 @@ root_url = "http://wowak.com/blog.html?user="+username
 page = requests.get(root_url, verify=True).content
 url = "https://steemit.com"
 browser = webdriver.Chrome(chrome_options=options) #replace with .Firefox(), or with the browser of your choice
+# browser = webdriver.Firefox()
 browser.get(root_url)
 time.sleep(5)
 links = browser.find_elements_by_xpath("//*[@href]")
@@ -34,16 +35,22 @@ for keys,values in data_links.items():
    counter = 0
    for image in images:
       # filter out steemitboard
-      if ('steemitboard' not in image.attrs['src']):
-         try:
-            key = "<img src='"+image.attrs['src']+"' alt='"+image.attrs['alt']+"'>"
-         except KeyError:
-	    key = "<img src='"+image.attrs['src']+"' alt='"+values+"'>"
-         data_images[key] = values
+      try:
+         if ('steemitboard' not in image.attrs['src']):
+            try:
+               key = "<img src='"+image.attrs['src']+"' alt='"+image.attrs['alt']+"'>"
+            except KeyError:
+	       key = "<img src='"+image.attrs['src']+"' alt='"+values+"'>"
+            data_images[key] = values
+      except KeyError:
+	print ''
 
 for keys,values in data_images.items():
    print "<div class='pull-left'><a href='"+values+"'>"
    print keys.decode('utf-8') 
    print "</a></div>"
+
+print "Created by <a href='https://steemit.com/@bardionson>@BardIonson</a><br>"
+print "Get Directions at <a href='https://steemit.com/>Make Photo Gallery</a>"
 
 browser.quit()
