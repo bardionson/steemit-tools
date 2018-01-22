@@ -1,0 +1,26 @@
+<html>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+<script>
+var urlParams = new URLSearchParams(window.location.search);
+var user = urlParams.getAll('user')
+steem.api.setOptions({ url: 'https://api.steemit.com' });
+
+function fillBlogEntries(username)
+{
+  steem.api.getDiscussionsByBlog({tag: username, limit: 100}, function(err, blog) 
+    {
+      var blogContainer = $('#blog');
+      for (var i = 0; i < blog.length; i++) 
+      {
+        blogContainer.append('<div><a target="_blank" href="https://steemit.com' + 
+          blog[i].url + '">'+ blog[i].title  + '</div></a>');
+      }
+    });
+}
+fillBlogEntries(String(user));
+</script>
+<div id="blog"></div>
+</body>
