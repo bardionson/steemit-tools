@@ -50,7 +50,7 @@ for keys,values in data_images.items():
    print keys.decode('utf-8') 
    print "</a></div>"
 
-print "Created by <a href='https://steemit.com/@bardionson>@BardIonson</a><br>"
-print "Get Directions at <a href='https://steemit.com/>Make Photo Gallery</a>"
+print "Created by <a href='https://steemit.com/@bardionson>@BardIonson'</a><br>"
+print "Get Directions at <a href='https://steemit.com/how-to-monitize-your-old-posts'>Make Photo Gallery'</a>"
 
 browser.quit()
