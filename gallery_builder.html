@@ -1,0 +1,77 @@
+<html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-8154005-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-8154005-1');
+</script>
+
+</head>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>
+<script src="https://mktcode.github.io/steemit-widgets/assets/js/steemit-widgets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
+<script>
+var urlParams = new URLSearchParams(window.location.search);
+var user = urlParams.getAll('user')
+var rows = urlParams.getAll('rows')
+$('#username').val(user)
+steem.api.setOptions({ url: 'https://api.steemit.com' });
+$(document).ready(function () {
+   $('#username').val(user)
+   $('#numberposts').val(rows)
+})
+
+function fillBlogEntries(username, rows)
+{
+  steem.api.getDiscussionsByBlog({tag: username, limit: rows}, function(err, blog) 
+  {  
+      var pages = []
+      var blogContainer = $('#blog');
+      blogContainer.append('# Photo Gallery for @' + username + '\n')
+      for (var i = 0; i < blog.length; i++)
+      {
+        //alert(username + ' ' + blog[i].url)
+        //pages.push(blog[i].url)
+        var body = blog[i].body
+        var url = blog[i].url
+        if (url.indexOf(username) > 0) {
+           var converter = new showdown.Converter(),
+           html = converter.makeHtml(blog[i].body);
+           var $bodyElements = $(html)
+           var allImg = ('img', $bodyElements).find('img').map(function() { 
+              var image = "&lt;img src='"+this.src+"' alt='"+this.alt+"'&gt;"
+              var link = "&lt;a href=https://steemit.com"+url+"&gt;"+image+"&lt;/a&gt;"
+              return "&lt;div class='pull-left'&gt;"+link+"&lt;/div&gt;\n"; 
+           }).get();
+           blogContainer.append(allImg)
+        }
+      }
+      blogContainer.append('Provided by [@BardIonson](https://steemit.com/@bardionson)\nTo make your own use the [Gallery Builder](http://wowak.com/gallery_builder.html)')
+  });
+}
+
+fillBlogEntries(String(user), parseInt(rows));
+</script>
+<h1>Gallery Builder</h1>
+<img src='https://steemitimages.com/0x0/https://i.imgur.com/cWhF1F1.png' alt='Gallery Example' width='200' style="padding: 0 15px; float: left;"/>
+Provided by <a href="https://steemit.com/@bardionson">@bardionson</a>
+<p>
+This will search up to 100 of your last Steemit posts for images. The images will be collected into clickable image tags that you can copy out of the text area below and paste into your Steemit or Busy editor. It will skip posts that are resteemed.
+<form>
+Username: 
+<input type='text' name='user' id="username"></input>
+Posts to search: 
+<input type='number' name='rows' id="numberposts"></input><p>
+<button type="submit" style="font-size:11pt;color:white;background-color:green;border:2px solid #336600;padding:3px">Generate Gallery</button>
+</form>
+<textarea id="blog" readonly="true" style="margin: 0px; height: 400px; width:100%">
+</textarea>
+<div id="posts"></div>
+</body>
